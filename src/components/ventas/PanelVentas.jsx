@@ -1,140 +1,91 @@
 /**
  * ============================================
- * PANEL DE VENTAS - VERSIÓN MÓVIL
- * ============================================
- * 
- * 📌 ¿QUÉ HACE ESTE COMPONENTE?
- * ---------------------------------------------
- * Es el corazón del POS. Permite:
- * 1. Ver estadísticas (total y cantidad de ventas)
- * 2. Registrar nuevas ventas
- * 3. Listar todas las ventas realizadas
- * 4. Eliminar ventas individuales
- * 
- * 🎯 ESTRUCTURA:
- * ---------------------------------------------
- * 1. Tarjetas de estadísticas (Total / Cantidad)
- * 2. Formulario para registrar nueva venta
- * 3. Lista de ventas con opción de eliminar
- * 
- * 🔧 CÓMO MODIFICARLO:
- * ---------------------------------------------
- * 1. Cambiar colores: Buscar '#ff6b00' o '#00b4d8'
- * 2. Agregar campo extra: Agregar un nuevo <Input>
- * 3. Cambiar mensajes: Modificar los alert()
- * 4. Agregar filtros: Añadir un input de búsqueda
- * 5. Editar venta: Agregar botón de editar en cada item
+ * PANEL DE VENTAS - CON BUSCADOR Y REPORTES
  * ============================================
  */
 
 import { useState } from 'react';
-import Boton from '../common/Boton';
-import Input from '../common/Input';
+import Toast from '../common/Toast';
+import BuscadorVentas from './BuscadorVentas';
+import ReporteVentas from './ReporteVentas';
 
 const PanelVentas = () => {
-  // ============================================
-  // ESTADO LOCAL
-  // ============================================
-  
-  // Lista de ventas (datos de ejemplo)
   const [ventas, setVentas] = useState([
-    { id: 1, monto: 150.00, descripcion: 'Producto A', fecha: '01/09/2026', hora: '14:30', vendedor: 'Daniel' },
-    { id: 2, monto: 75.50, descripcion: 'Producto B', fecha: '01/09/2026', hora: '15:45', vendedor: 'Daniel' },
+    { id: 1, monto: 150.00, descripcion: 'Producto A', fecha: '01/09/2026', hora: '14:30', vendedor: 'Daniel', vendedorNombre: 'Daniel' },
+    { id: 2, monto: 75.50, descripcion: 'Producto B', fecha: '01/09/2026', hora: '15:45', vendedor: 'Daniel', vendedorNombre: 'Daniel' },
   ]);
-  
-  // Campos del formulario
   const [monto, setMonto] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [cargando, setCargando] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [ventasFiltradas, setVentasFiltradas] = useState(ventas);
 
-  // ============================================
-  // CÁLCULOS
-  // ============================================
-  
-  // Total de todas las ventas
   const total = ventas.reduce((sum, v) => sum + v.monto, 0);
 
-  // ============================================
-  // FUNCIONES DEL CRUD
-  // ============================================
-  
-  /**
-   * handleRegistrar - Registra una nueva venta
-   * @param {Event} e - Evento del formulario
-   */
+  const mostrarToast = (mensaje, tipo = 'success') => {
+    setToast({ mensaje, tipo });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const handleRegistrar = (e) => {
     e.preventDefault();
-    
-    // Validación: El monto es obligatorio y debe ser mayor a 0
     if (!monto || parseFloat(monto) <= 0) {
-      alert('⚠️ Ingresa un monto válido');
+      mostrarToast('⚠️ Ingresa un monto válido', 'warning');
       return;
     }
 
     setCargando(true);
-    
-    // Simulación de guardado (después será Firebase)
     setTimeout(() => {
       const nuevaVenta = {
-        id: Date.now(), // ID único basado en timestamp
+        id: Date.now(),
         monto: parseFloat(monto),
-        descripcion: descripcion || 'Venta', // Si no hay descripción, usa "Venta"
+        descripcion: descripcion || 'Venta',
         fecha: new Date().toLocaleDateString('es-PE'),
         hora: new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }),
-        vendedor: 'Daniel' // Temporal, después será el usuario logueado
+        vendedor: 'Daniel',
+        vendedorNombre: 'Daniel'
       };
-      
-      // Agregar la nueva venta al inicio de la lista
       setVentas([nuevaVenta, ...ventas]);
-      
-      // Limpiar el formulario
+      setVentasFiltradas([nuevaVenta, ...ventas]);
       setMonto('');
       setDescripcion('');
       setCargando(false);
-      
-      // Mostrar confirmación
-      alert('✅ Venta registrada correctamente');
+      mostrarToast('✅ Venta registrada correctamente', 'success');
     }, 500);
   };
 
-  /**
-   * handleEliminar - Elimina una venta por su ID
-   * @param {number|string} id - ID de la venta a eliminar
-   */
   const handleEliminar = (id) => {
-    // Confirmación antes de eliminar
     if (confirm('¿Estás seguro de eliminar esta venta?')) {
-      // Filtrar la venta que coincide con el ID
       setVentas(ventas.filter(v => v.id !== id));
+      setVentasFiltradas(ventasFiltradas.filter(v => v.id !== id));
+      mostrarToast('🗑️ Venta eliminada', 'error');
     }
   };
 
-  // ============================================
-  // RENDERIZADO
-  // ============================================
-  
   return (
     <div>
-      {/* ======================================== */}
-      {/* TARJETAS DE ESTADÍSTICAS                 */}
-      {/* ======================================== */}
+      {toast && <Toast mensaje={toast.mensaje} tipo={toast.tipo} />}
+
+      {/* Reporte de Ventas */}
+      <ReporteVentas ventas={ventas} />
+
+      {/* Estadísticas rápidas */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr', // Dos columnas iguales
+        gridTemplateColumns: '1fr 1fr',
         gap: '12px',
         marginBottom: '20px'
       }}>
-        {/* Tarjeta 1: Total */}
         <div style={{
-          background: '#1a1a1a',
+          background: 'var(--bg-card)',
           padding: '16px',
           borderRadius: '16px',
-          border: '1px solid #2a2a2a',
+          border: '1px solid var(--border-color)',
           textAlign: 'center'
         }}>
-          <div style={{ color: '#888', fontSize: '12px' }}>💰 Total</div>
+          <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>💰 Total</div>
           <div style={{ 
-            color: '#ff6b00', 
+            color: 'var(--color-primary)', 
             fontSize: '24px', 
             fontWeight: 'bold',
             marginTop: '4px'
@@ -142,16 +93,14 @@ const PanelVentas = () => {
             S/ {total.toFixed(2)}
           </div>
         </div>
-        
-        {/* Tarjeta 2: Cantidad de ventas */}
         <div style={{
-          background: '#1a1a1a',
+          background: 'var(--bg-card)',
           padding: '16px',
           borderRadius: '16px',
-          border: '1px solid #2a2a2a',
+          border: '1px solid var(--border-color)',
           textAlign: 'center'
         }}>
-          <div style={{ color: '#888', fontSize: '12px' }}>📋 Ventas</div>
+          <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📋 Ventas</div>
           <div style={{ 
             color: '#00b4d8', 
             fontSize: '24px', 
@@ -163,18 +112,16 @@ const PanelVentas = () => {
         </div>
       </div>
 
-      {/* ======================================== */}
-      {/* FORMULARIO DE REGISTRO                   */}
-      {/* ======================================== */}
+      {/* Formulario */}
       <div style={{
-        background: '#1a1a1a',
+        background: 'var(--bg-card)',
         padding: '20px',
         borderRadius: '16px',
-        border: '1px solid #2a2a2a',
+        border: '1px solid var(--border-color)',
         marginBottom: '20px'
       }}>
         <h3 style={{
-          color: '#ff6b00',
+          color: 'var(--color-primary)',
           fontSize: '16px',
           margin: '0 0 16px 0',
           display: 'flex',
@@ -185,53 +132,80 @@ const PanelVentas = () => {
         </h3>
 
         <form onSubmit={handleRegistrar}>
-          {/* Campo: Monto */}
-          <Input
-            label="Monto (S/)"
-            tipo="number"
-            placeholder="0.00"
-            valor={monto}
-            onChange={setMonto}
-            requerido
+          <input
+            type="number"
+            placeholder="Monto (S/)"
+            value={monto}
+            onChange={(e) => setMonto(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              background: 'var(--bg-input)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '8px',
+              fontSize: '16px',
+              boxSizing: 'border-box',
+              marginBottom: '12px'
+            }}
+            step="0.01"
+            min="0.01"
+            required
           />
-          
-          {/* Campo: Descripción */}
-          <div style={{ marginTop: '12px' }}>
-            <Input
-              label="Descripción"
-              placeholder="¿Qué vendiste?"
-              valor={descripcion}
-              onChange={setDescripcion}
-            />
-          </div>
-          
-          {/* Botón Registrar */}
-          <div style={{ marginTop: '16px' }}>
-            <Boton
-              tipo="submit"
-              variante="primary"
-              anchoCompleto
-              cargando={cargando}
-              tamaño="lg"
-              icono="➕"
-            >
-              {cargando ? 'Registrando...' : 'Registrar Venta'}
-            </Boton>
-          </div>
+          <input
+            type="text"
+            placeholder="Descripción (opcional)"
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              background: 'var(--bg-input)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '8px',
+              fontSize: '16px',
+              boxSizing: 'border-box',
+              marginBottom: '16px'
+            }}
+          />
+          <button
+            type="submit"
+            disabled={cargando}
+            style={{
+              width: '100%',
+              padding: '14px',
+              background: 'var(--color-primary)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              opacity: cargando ? 0.6 : 1,
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              if (!cargando) e.target.style.background = 'var(--color-primary-dark)';
+            }}
+            onMouseLeave={(e) => {
+              if (!cargando) e.target.style.background = 'var(--color-primary)';
+            }}
+          >
+            {cargando ? '⏳ Registrando...' : '➕ Registrar Venta'}
+          </button>
         </form>
       </div>
 
-      {/* ======================================== */}
-      {/* LISTA DE VENTAS                         */}
-      {/* ======================================== */}
+      {/* Buscador y Lista */}
       <div style={{
-        background: '#1a1a1a',
+        background: 'var(--bg-card)',
         padding: '16px',
         borderRadius: '16px',
-        border: '1px solid #2a2a2a'
+        border: '1px solid var(--border-color)'
       }}>
         <h3 style={{
-          color: 'white',
+          color: 'var(--text-primary)',
           fontSize: '16px',
           margin: '0 0 16px 0',
           display: 'flex',
@@ -239,49 +213,47 @@ const PanelVentas = () => {
           justifyContent: 'space-between'
         }}>
           <span>📊 Últimas Ventas</span>
-          <span style={{ color: '#666', fontSize: '12px', fontWeight: 'normal' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: 'normal' }}>
             {ventas.length} ventas
           </span>
         </h3>
 
-        {/* Si no hay ventas, mostrar mensaje */}
-        {ventas.length === 0 ? (
+        <BuscadorVentas ventas={ventas} onFiltrar={setVentasFiltradas} />
+
+        {ventasFiltradas.length === 0 ? (
           <div style={{ 
             textAlign: 'center', 
-            color: '#666', 
+            color: 'var(--text-muted)', 
             padding: '32px 0',
             fontSize: '14px'
           }}>
-            No hay ventas registradas
+            No hay ventas para mostrar
           </div>
         ) : (
-          // Lista de ventas con scroll
           <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {ventas.map((venta) => (
+            {ventasFiltradas.map((venta) => (
               <div key={venta.id} style={{
                 padding: '14px 16px',
-                borderBottom: '1px solid #2a2a2a',
+                borderBottom: '1px solid var(--border-color)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 gap: '12px',
                 transition: 'background 0.2s'
               }}
-              // Efecto hover (para desktop)
-              onMouseEnter={(e) => e.target.style.background = '#222'}
+              onMouseEnter={(e) => e.target.style.background = 'var(--bg-card-hover)'}
               onMouseLeave={(e) => e.target.style.background = 'transparent'}
               >
-                {/* Información de la venta */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ 
                     fontWeight: 'bold', 
-                    color: '#ff6b00',
+                    color: 'var(--color-primary)',
                     fontSize: '18px'
                   }}>
                     S/ {venta.monto.toFixed(2)}
                   </div>
                   <div style={{ 
-                    color: '#ccc', 
+                    color: 'var(--text-secondary)', 
                     fontSize: '14px',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
@@ -290,7 +262,7 @@ const PanelVentas = () => {
                     {venta.descripcion}
                   </div>
                   <div style={{ 
-                    color: '#666', 
+                    color: 'var(--text-muted)', 
                     fontSize: '11px',
                     display: 'flex',
                     gap: '8px',
@@ -298,16 +270,14 @@ const PanelVentas = () => {
                   }}>
                     <span>📅 {venta.fecha}</span>
                     <span>⏰ {venta.hora}</span>
-                    <span>👤 {venta.vendedor}</span>
+                    <span>👤 {venta.vendedorNombre || venta.vendedor}</span>
                   </div>
                 </div>
-                
-                {/* Botón Eliminar */}
                 <button
                   onClick={() => handleEliminar(venta.id)}
                   style={{
-                    background: 'rgba(255, 71, 87, 0.15)',
-                    color: '#ff4757',
+                    background: 'rgba(239, 68, 68, 0.15)',
+                    color: '#ef4444',
                     border: 'none',
                     padding: '8px 12px',
                     borderRadius: '8px',

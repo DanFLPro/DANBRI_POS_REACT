@@ -1,268 +1,248 @@
 /**
  * ============================================
- * PANEL DE ADMINISTRADOR - VERSIÓN MÓVIL
- * ============================================
- * 
- * 📌 ¿QUÉ HACE ESTE COMPONENTE?
- * ---------------------------------------------
- * Funciones exclusivas para administradores:
- * 1. Cerrar el día (archivar ventas)
- * 2. Ver resumen general de ventas
- * 3. Ver historial de cierres
- * 
- * 🎯 CARACTERÍSTICAS:
- * ---------------------------------------------
- * ✅ Solo visible para usuarios con rol "admin"
- * ✅ Diseño compacto para móvil
- * ✅ Acciones con un solo toque
- * 
- * 🔧 CÓMO MODIFICARLO:
- * ---------------------------------------------
- * 1. Cambiar colores: Buscar '#ff6b00' o '#00b894'
- * 2. Agregar más acciones: Añadir más botones
- * 3. Cambiar datos de ejemplo: Modificar el useState de historial
- * 4. Agregar exportar datos: Añadir botón de exportar
+ * PANEL DE ADMINISTRADOR - CIERRE DE DÍA
  * ============================================
  */
 
 import { useState } from 'react';
-import Boton from '../common/Boton';
 
-const PanelAdmin = () => {
-  // ============================================
-  // ESTADO LOCAL
-  // ============================================
-  
-  // Historial de cierres (datos de ejemplo)
-  const [historial, setHistorial] = useState([
-    { id: 1, fecha: '01/09/2026', total: 1250.00, ventas: 15 },
-    { id: 2, fecha: '31/08/2026', total: 980.00, ventas: 12 },
-  ]);
-  
-  // Controla si se muestra o no el historial
+const PanelAdmin = ({ ventas, onCerrarDia, onVerHistorial }) => {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [cierres, setCierres] = useState([]);
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  const [resumenDia, setResumenDia] = useState(null);
 
-  // ============================================
-  // CÁLCULOS
-  // ============================================
-  
-  // Total acumulado de todos los cierres
-  const totalGeneral = historial.reduce((sum, h) => sum + h.total, 0);
-  
-  // Total de ventas acumuladas
-  const totalVentasGeneral = historial.reduce((sum, h) => sum + h.ventas, 0);
+  const calcularResumenDia = () => {
+    const hoy = new Date().toLocaleDateString('es-PE');
+    const ventasHoy = ventas.filter(v => v.fecha === hoy);
+    const total = ventasHoy.reduce((sum, v) => sum + v.monto, 0);
+    
+    const porVendedor = ventasHoy.reduce((acc, v) => {
+      const nombre = v.vendedorNombre || v.vendedor || 'Desconocido';
+      acc[nombre] = (acc[nombre] || 0) + v.monto;
+      return acc;
+    }, {});
 
-  // ============================================
-  // FUNCIONES DE ACCIÓN
-  // ============================================
-  
-  /**
-   * handleCerrarDia - Cierra el día actual
-   * (Simulación - después se conectará con Firebase)
-   */
-  const handleCerrarDia = () => {
-    // Aquí irá la lógica para cerrar el día
-    alert('📆 Función de cierre de día (próximamente con Firebase)');
+    return { 
+      fecha: hoy, 
+      total, 
+      cantidad: ventasHoy.length, 
+      porVendedor,
+      ventas: ventasHoy
+    };
   };
 
-  /**
-   * toggleHistorial - Muestra u oculta el historial
-   */
-  const toggleHistorial = () => {
+  const handleCerrarDia = () => {
+    const resumen = calcularResumenDia();
+    if (resumen.cantidad === 0) {
+      alert('No hay ventas para cerrar hoy');
+      return;
+    }
+    setResumenDia(resumen);
+    setMostrarConfirmacion(true);
+  };
+
+  const handleConfirmarCierre = () => {
+    const nuevoCierre = {
+      id: Date.now(),
+      fecha: resumenDia.fecha,
+      total: resumenDia.total,
+      ventas: resumenDia.cantidad,
+      detalle: resumenDia.porVendedor,
+      timestamp: Date.now()
+    };
+    
+    setCierres([nuevoCierre, ...cierres]);
+    setMostrarConfirmacion(false);
+    
+    if (onCerrarDia) {
+      onCerrarDia(resumenDia.fecha);
+    }
+    
+    alert(`✅ Día ${resumenDia.fecha} cerrado. Total: S/ ${resumenDia.total.toFixed(2)}`);
+    setResumenDia(null);
+  };
+
+  const handleVerHistorial = () => {
     setMostrarHistorial(!mostrarHistorial);
   };
 
-  /**
-   * handleReiniciar - Reinicia todas las ventas
-   * (Solo para emergencias)
-   */
-  const handleReiniciar = () => {
-    if (confirm('⚠️ ¿Reiniciar TODAS las ventas? Esta acción NO se puede deshacer.')) {
-      alert('✅ Todas las ventas han sido eliminadas (simulado)');
-      // Aquí irá la lógica real con Firebase
-    }
-  };
+  const totalGeneral = cierres.reduce((sum, c) => sum + c.total, 0);
 
-  // ============================================
-  // RENDERIZADO
-  // ============================================
-  
   return (
-    <div style={{ marginTop: '24px' }}>
-      {/* Título de la sección */}
-      <h2 style={{ 
-        color: 'white', 
-        fontSize: '18px', 
-        marginBottom: '16px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px'
-      }}>
-        🛠️ Panel Admin
-      </h2>
-
-      {/* ======================================== */}
-      {/* TARJETAS DE ACCIONES                     */}
-      {/* ======================================== */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr', // Una columna (apilado)
-        gap: '12px',
-        marginBottom: '20px'
-      }}>
-        
-        {/* Tarjeta 1: Cerrar Día */}
+    <div style={{ marginTop: '20px' }}>
+      {/* Modal de confirmación */}
+      {mostrarConfirmacion && resumenDia && (
         <div style={{
-          background: '#1a1a1a',
-          padding: '16px',
-          borderRadius: '16px',
-          border: '1px solid #2a2a2a'
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <div>
-              <div style={{ fontWeight: 'bold' }}>📆 Cerrar Día</div>
-              <div style={{ color: '#888', fontSize: '12px' }}>
-                Archiva las ventas del día
-              </div>
-            </div>
-            <Boton 
-              variante="success" 
-              tamaño="sm"
-              onClick={handleCerrarDia}
-            >
-              Cerrar
-            </Boton>
-          </div>
-        </div>
-
-        {/* Tarjeta 2: Resumen General */}
-        <div style={{
-          background: '#1a1a1a',
-          padding: '16px',
-          borderRadius: '16px',
-          border: '1px solid #2a2a2a'
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <div>
-              <div style={{ fontWeight: 'bold' }}>📊 Resumen</div>
-              <div style={{ color: '#888', fontSize: '12px' }}>
-                Total acumulado
-              </div>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ color: '#ff6b00', fontWeight: 'bold', fontSize: '18px' }}>
-                S/ {totalGeneral.toFixed(2)}
-              </div>
-              <div style={{ color: '#00b4d8', fontSize: '12px' }}>
-                {totalVentasGeneral} ventas
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tarjeta 3: Reiniciar (Peligro) */}
-        <div style={{
-          background: '#1a1a1a',
-          padding: '16px',
-          borderRadius: '16px',
-          border: '1px solid #2a2a2a'
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <div>
-              <div style={{ fontWeight: 'bold', color: '#ff4757' }}>⚠️ Reiniciar</div>
-              <div style={{ color: '#888', fontSize: '12px' }}>
-                Elimina TODAS las ventas
-              </div>
-            </div>
-            <Boton 
-              variante="danger" 
-              tamaño="sm"
-              onClick={handleReiniciar}
-            >
-              Reiniciar
-            </Boton>
-          </div>
-        </div>
-      </div>
-
-      {/* ======================================== */}
-      {/* HISTORIAL DE CIERRES                     */}
-      {/* ======================================== */}
-      <div style={{
-        background: '#1a1a1a',
-        padding: '16px',
-        borderRadius: '16px',
-        border: '1px solid #2a2a2a'
-      }}>
-        {/* Cabecera del historial con botón toggle */}
-        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '12px'
+          justifyContent: 'center',
+          zIndex: 9998,
+          padding: '20px'
         }}>
-          <h3 style={{ margin: 0, fontSize: '16px' }}>📋 Historial</h3>
-          <Boton 
-            variante="secondary" 
-            tamaño="sm"
-            onClick={toggleHistorial}
+          <div style={{
+            background: 'var(--bg-card)',
+            padding: '24px',
+            borderRadius: '16px',
+            maxWidth: '400px',
+            width: '100%',
+            border: '1px solid var(--border-color)'
+          }}>
+            <h3 style={{ margin: '0 0 16px 0', color: 'var(--text-primary)' }}>
+              📆 Cerrar Día
+            </h3>
+            <div style={{ marginBottom: '16px', color: 'var(--text-secondary)' }}>
+              <p><strong>📅 Fecha:</strong> {resumenDia.fecha}</p>
+              <p><strong>💰 Total:</strong> S/ {resumenDia.total.toFixed(2)}</p>
+              <p><strong>🧾 Ventas:</strong> {resumenDia.cantidad}</p>
+              <div style={{ marginTop: '8px' }}>
+                <strong>👤 Por vendedor:</strong>
+                {Object.entries(resumenDia.porVendedor).map(([nombre, total]) => (
+                  <div key={nombre} style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+                    {nombre}: S/ {total.toFixed(2)}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={handleConfirmarCierre}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  background: '#22c55e',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+              >
+                ✅ Confirmar
+              </button>
+              <button
+                onClick={() => {
+                  setMostrarConfirmacion(false);
+                  setResumenDia(null);
+                }}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  background: 'var(--bg-input)',
+                  color: 'var(--text-muted)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                ❌ Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Panel Admin */}
+      <div style={{
+        background: 'var(--bg-card)',
+        padding: '20px',
+        borderRadius: '16px',
+        border: '1px solid var(--border-color)'
+      }}>
+        <h3 style={{
+          color: 'var(--text-primary)',
+          fontSize: '16px',
+          margin: '0 0 16px 0'
+        }}>
+          🛠️ Panel de Administración
+        </h3>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          <button
+            onClick={handleCerrarDia}
+            style={{
+              padding: '10px 20px',
+              background: '#22c55e',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              flex: 1,
+              minWidth: '120px'
+            }}
           >
-            {mostrarHistorial ? 'Ocultar' : 'Ver'}
-          </Boton>
+            📆 Cerrar Día
+          </button>
+          <button
+            onClick={handleVerHistorial}
+            style={{
+              padding: '10px 20px',
+              background: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              flex: 1,
+              minWidth: '120px'
+            }}
+          >
+            📊 Historial
+          </button>
         </div>
 
-        {/* Contenido del historial (se muestra solo si está activo) */}
         {mostrarHistorial && (
-          <div>
-            {historial.length === 0 ? (
-              <p style={{ color: '#666', textAlign: 'center', padding: '16px 0' }}>
+          <div style={{ marginTop: '16px' }}>
+            <h4 style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: '0 0 8px 0' }}>
+              Historial de Cierres
+            </h4>
+            {cierres.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '12px 0' }}>
                 No hay cierres registrados
               </p>
             ) : (
-              // Lista de cierres
-              historial.map((cierre) => (
-                <div key={cierre.id} style={{
-                  padding: '12px 14px',
-                  background: '#222',
-                  borderRadius: '10px',
-                  marginBottom: '8px',
-                  borderLeft: '3px solid #00b894', // Línea verde a la izquierda
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
+              <>
+                <div style={{
+                  background: 'var(--bg-primary)',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  marginBottom: '12px',
+                  textAlign: 'center'
                 }}>
-                  <div>
-                    <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
-                      📅 {cierre.fecha}
+                  <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
+                    Total acumulado: 
+                  </span>
+                  <span style={{ color: 'var(--color-primary)', fontWeight: 'bold', fontSize: '18px' }}>
+                    S/ {totalGeneral.toFixed(2)}
+                  </span>
+                </div>
+                {cierres.map((cierre) => (
+                  <div key={cierre.id} style={{
+                    padding: '10px 14px',
+                    background: 'var(--bg-input)',
+                    borderRadius: '8px',
+                    marginBottom: '8px',
+                    borderLeft: '3px solid var(--color-primary)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontWeight: 'bold' }}>📅 {cierre.fecha}</span>
+                      <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
+                        S/ {cierre.total.toFixed(2)}
+                      </span>
                     </div>
-                    <div style={{ color: '#888', fontSize: '12px' }}>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
                       🧾 {cierre.ventas} ventas
                     </div>
                   </div>
-                  <div style={{ 
-                    color: '#ff6b00', 
-                    fontWeight: 'bold', 
-                    fontSize: '18px' 
-                  }}>
-                    S/ {cierre.total.toFixed(2)}
-                  </div>
-                </div>
-              ))
+                ))}
+              </>
             )}
           </div>
         )}
