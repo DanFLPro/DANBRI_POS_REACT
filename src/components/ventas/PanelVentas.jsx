@@ -1,6 +1,6 @@
 /**
  * ============================================
- * PANEL DE VENTAS - CON REGISTRO DIARIO
+ * PANEL DE VENTAS - DISEÑO MEJORADO
  * ============================================
  */
 
@@ -8,11 +8,9 @@ import { useState } from 'react';
 import Toast from '../common/Toast';
 import BuscadorVentas from './BuscadorVentas';
 import ReporteVentas from './ReporteVentas';
-// 🔥 IMPORTAR EL CONTEXTO DE REGISTRO
 import { useRegistro } from '../../contexts/RegistroContext';
 
 const PanelVentas = () => {
-  // 🔥 OBTENER LA FUNCIÓN PARA GUARDAR REGISTROS
   const { agregarRegistro } = useRegistro();
 
   const [ventas, setVentas] = useState([
@@ -51,11 +49,8 @@ const PanelVentas = () => {
         vendedorNombre: 'Daniel'
       };
       
-      // Guardar en el estado local (para mostrar en la lista)
       setVentas([nuevaVenta, ...ventas]);
       setVentasFiltradas([nuevaVenta, ...ventas]);
-      
-      // 🔥 GUARDAR EN EL REGISTRO DIARIO (para el historial y exportar)
       agregarRegistro(nuevaVenta);
       
       setMonto('');
@@ -77,92 +72,123 @@ const PanelVentas = () => {
     <div>
       {toast && <Toast mensaje={toast.mensaje} tipo={toast.tipo} />}
 
-      {/* Reporte de Ventas */}
-      <ReporteVentas ventas={ventas} />
-
-      {/* Estadísticas rápidas */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-label">💰 Total</div>
-          <div className="stat-value primary">S/ {total.toFixed(2)}</div>
+      {/* ======================================== */}
+      {/* TOTAL ACUMULADO (más visible)           */}
+      {/* ======================================== */}
+      <div style={{
+        background: 'var(--bg-card)',
+        padding: '20px',
+        borderRadius: '16px',
+        border: '2px solid var(--color-primary)',
+        marginBottom: '16px',
+        textAlign: 'center',
+        boxShadow: '0 0 30px rgba(255, 107, 0, 0.08)'
+      }}>
+        <div style={{ 
+          fontSize: '13px', 
+          color: 'var(--text-muted)',
+          fontWeight: '500',
+          textTransform: 'uppercase',
+          letterSpacing: '1px'
+        }}>
+          💰 Total Acumulado
         </div>
-        <div className="stat-card">
-          <div className="stat-label">📋 Ventas</div>
-          <div className="stat-value info">{ventas.length}</div>
+        <div style={{
+          fontSize: '32px',
+          fontWeight: '700',
+          color: 'var(--color-primary)',
+          marginTop: '2px'
+        }}>
+          S/ {total.toFixed(2)}
+        </div>
+        <div style={{
+          fontSize: '13px',
+          color: 'var(--text-muted)',
+          marginTop: '2px'
+        }}>
+          {ventas.length} ventas registradas
         </div>
       </div>
 
-      {/* Formulario */}
-      {/* Formulario */}
-<div className="card" style={{
-  background: 'var(--bg-card)',
-  border: '2px solid var(--color-primary)',
-  boxShadow: '0 0 20px rgba(255, 107, 0, 0.05)'
-}}>
-  <h3 className="card-title" style={{ 
-    color: 'var(--color-primary)', 
-    marginBottom: '14px',
-    fontSize: '18px'
-  }}>
-    📝 Nueva Venta
-  </h3>
-  <form onSubmit={handleRegistrar}>
-    <div style={{ marginBottom: '12px' }}>
-      <label style={{ 
-        fontSize: '13px', 
-        color: 'var(--text-secondary)',
-        fontWeight: '500',
-        display: 'block',
-        marginBottom: '4px'
+      {/* ======================================== */}
+      {/* FORMULARIO DE REGISTRO                   */}
+      {/* ======================================== */}
+      <div className="card" style={{
+        border: '2px solid var(--color-primary)',
+        boxShadow: '0 0 20px rgba(255, 107, 0, 0.05)',
+        marginBottom: '16px'
       }}>
-        💰 Monto (S/)
-      </label>
-      <input
-        type="number"
-        className="input"
-        placeholder="0.00"
-        value={monto}
-        onChange={(e) => setMonto(e.target.value)}
-        step="0.01"
-        min="0.01"
-        required
-      />
-    </div>
-    <div style={{ marginBottom: '16px' }}>
-      <label style={{ 
-        fontSize: '13px', 
-        color: 'var(--text-secondary)',
-        fontWeight: '500',
-        display: 'block',
-        marginBottom: '4px'
-      }}>
-        📝 Descripción (opcional)
-      </label>
-      <input
-        type="text"
-        className="input"
-        placeholder="¿Qué vendiste?"
-        value={descripcion}
-        onChange={(e) => setDescripcion(e.target.value)}
-      />
-    </div>
-    <button
-      type="submit"
-      className="btn btn-primary btn-block"
-      disabled={cargando}
-      style={{ 
-        opacity: cargando ? 0.6 : 1,
-        fontSize: '16px',
-        fontWeight: '700'
-      }}
-    >
-      {cargando ? '⏳ Registrando...' : '➕ Registrar Venta'}
-    </button>
-  </form>
-</div>
+        <h3 className="card-title" style={{ 
+          color: 'var(--color-primary)', 
+          marginBottom: '14px',
+          fontSize: '17px'
+        }}>
+          📝 Registrar Venta
+        </h3>
 
-      {/* Buscador y Lista */}
-      <div className="card">
+        <form onSubmit={handleRegistrar}>
+          <div style={{ marginBottom: '12px' }}>
+            <label style={{ 
+              fontSize: '13px', 
+              color: 'var(--text-secondary)',
+              fontWeight: '500',
+              display: 'block',
+              marginBottom: '4px'
+            }}>
+              💰 Monto (S/)
+            </label>
+            <input
+              type="number"
+              className="input"
+              placeholder="0.00"
+              value={monto}
+              onChange={(e) => setMonto(e.target.value)}
+              step="0.01"
+              min="0.01"
+              required
+              autoFocus
+            />
+          </div>
+
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ 
+              fontSize: '13px', 
+              color: 'var(--text-secondary)',
+              fontWeight: '500',
+              display: 'block',
+              marginBottom: '4px'
+            }}>
+              📝 Descripción (opcional)
+            </label>
+            <input
+              type="text"
+              className="input"
+              placeholder="¿Qué vendiste?"
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary btn-block"
+            disabled={cargando}
+            style={{ 
+              opacity: cargando ? 0.6 : 1,
+              fontSize: '16px',
+              fontWeight: '700',
+              padding: '16px'
+            }}
+          >
+            {cargando ? '⏳ Registrando...' : '➕ Registrar Venta'}
+          </button>
+        </form>
+      </div>
+
+      {/* ======================================== */}
+      {/* LISTA DE VENTAS                         */}
+      {/* ======================================== */}
+      <div className="card" style={{ marginBottom: '16px' }}>
         <div className="card-header">
           <h3 className="card-title">📊 Últimas Ventas</h3>
           <span className="card-subtitle">{ventas.length} ventas</span>
@@ -174,13 +200,13 @@ const PanelVentas = () => {
           <div style={{ 
             textAlign: 'center', 
             color: 'var(--text-muted)', 
-            padding: '32px 0',
+            padding: '30px 0',
             fontSize: '14px'
           }}>
             No hay ventas para mostrar
           </div>
         ) : (
-          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
             {ventasFiltradas.map((venta) => (
               <div key={venta.id} className="venta-item">
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -195,14 +221,20 @@ const PanelVentas = () => {
                 <button
                   onClick={() => handleEliminar(venta.id)}
                   style={{
-                    background: 'rgba(239, 68, 68, 0.15)',
+                    background: 'rgba(239, 68, 68, 0.12)',
                     color: '#ef4444',
                     border: 'none',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    borderRadius: '10px',
                     fontSize: '18px',
                     cursor: 'pointer',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    minWidth: '44px',
+                    minHeight: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    touchAction: 'manipulation'
                   }}
                 >
                   🗑️
@@ -212,6 +244,11 @@ const PanelVentas = () => {
           </div>
         )}
       </div>
+
+      {/* ======================================== */}
+      {/* REPORTE DE VENTAS (opcional, abajo)     */}
+      {/* ======================================== */}
+      <ReporteVentas ventas={ventas} />
     </div>
   );
 };
