@@ -1,12 +1,11 @@
 /* ============================================
-   ESTILOS GLOBALES - DANBRI POS
+   DANBRI POS - ESTILOS GLOBALES
    ============================================ */
 
 /* ============================================
-   VARIABLES CSS (Temas)
+   VARIABLES CSS (Colores del logo Danbri)
    ============================================ */
 
-/* Modo oscuro (predeterminado) */
 :root {
   /* Colores principales del logo */
   --color-primary: #FF6B00;
@@ -17,22 +16,21 @@
   /* Fondos */
   --bg-primary: #0f0f0f;
   --bg-secondary: #1a1a1a;
-  --bg-card: #222222;
+  --bg-card: #1e1e1e;
   --bg-card-hover: #2a2a2a;
   --bg-input: #2a2a2a;
   
   /* Textos */
   --text-primary: #ffffff;
-  --text-secondary: #cccccc;
+  --text-secondary: #e0e0e0;
   --text-muted: #888888;
   
   /* Bordes */
   --border-color: #333333;
-  --border-light: #444444;
   
   /* Sombras */
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-  --shadow-light: 0 2px 12px rgba(0, 0, 0, 0.2);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Modo claro */
@@ -48,10 +46,9 @@ body.light {
   --text-muted: #666666;
   
   --border-color: #e0e0e0;
-  --border-light: #d0d0d0;
   
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  --shadow-light: 0 2px 12px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 /* ============================================
@@ -70,15 +67,17 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   transition: background 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================
-   SCROLLBAR PERSONALIZADA
+   SCROLLBAR
    ============================================ */
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -90,87 +89,31 @@ body {
   border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-dark);
-}
-
 /* ============================================
-   UTILIDADES
-   ============================================ */
-
-.text-center { text-align: center; }
-.text-muted { color: var(--text-muted); }
-.text-orange { color: var(--color-primary); }
-
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
-.mt-3 { margin-top: 24px; }
-.mt-4 { margin-top: 32px; }
-
-.mb-1 { margin-bottom: 8px; }
-.mb-2 { margin-bottom: 16px; }
-.mb-3 { margin-bottom: 24px; }
-.mb-4 { margin-bottom: 32px; }
-
-/* ============================================
-   ANIMACIONES
-   ============================================ */
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-/* ============================================
-   ESTILOS DE TARJETAS (CARDS)
+   TARJETAS (CARDS)
    ============================================ */
 
 .card {
   background: var(--bg-card);
   border-radius: 16px;
   border: 1px solid var(--border-color);
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-light);
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
-}
-
-.card:hover {
-  box-shadow: var(--shadow);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .card-title {
   color: var(--text-primary);
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   margin: 0;
   display: flex;
   align-items: center;
@@ -180,28 +123,72 @@ body {
 .card-subtitle {
   color: var(--text-muted);
   font-size: 12px;
-  font-weight: normal;
+  font-weight: 400;
 }
 
 /* ============================================
-   ESTILOS DE INPUTS
+   ESTADÍSTICAS
+   ============================================ */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.stat-value.primary {
+  color: var(--color-primary);
+}
+
+.stat-value.info {
+  color: #00b4d8;
+}
+
+/* ============================================
+   INPUTS
    ============================================ */
 
 .input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 14px 16px;
   background: var(--bg-input);
   color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
   font-size: 16px;
   box-sizing: border-box;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
+  -webkit-appearance: none;
 }
 
 .input:focus {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.15);
 }
 
 .input::placeholder {
@@ -209,21 +196,23 @@ body {
 }
 
 /* ============================================
-   ESTILOS DE BOTONES
+   BOTONES
    ============================================ */
 
 .btn {
-  padding: 12px 20px;
+  padding: 14px 20px;
   border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
   cursor: pointer;
   transition: all 0.2s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 50px;
+  touch-action: manipulation;
 }
 
 .btn-primary {
@@ -233,6 +222,11 @@ body {
 
 .btn-primary:hover {
   background: var(--color-primary-dark);
+  transform: scale(1.01);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
 }
 
 .btn-success {
@@ -259,79 +253,38 @@ body {
   border: 1px solid var(--border-color);
 }
 
-.btn-secondary:hover {
-  background: var(--bg-card-hover);
-}
-
 .btn-block {
   width: 100%;
 }
 
 /* ============================================
-   ESTILOS DE ESTADÍSTICAS (STATS)
-   ============================================ */
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.stat-card {
-  background: var(--bg-card);
-  padding: 16px;
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  text-align: center;
-}
-
-.stat-label {
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 4px;
-}
-
-.stat-value.primary {
-  color: var(--color-primary);
-}
-
-.stat-value.info {
-  color: #00b4d8;
-}
-
-/* ============================================
-   ESTILOS DE LISTA DE VENTAS
+   LISTA DE VENTAS
    ============================================ */
 
 .venta-item {
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   transition: background 0.2s;
-  cursor: default;
-}
-
-.venta-item:hover {
-  background: var(--bg-card-hover);
+  border-radius: 8px;
+  margin-bottom: 2px;
 }
 
 .venta-item:last-child {
   border-bottom: none;
 }
 
+.venta-item:hover {
+  background: var(--bg-card-hover);
+}
+
 .venta-monto {
-  font-weight: bold;
+  font-weight: 700;
   color: var(--color-primary);
-  font-size: 18px;
+  font-size: 17px;
 }
 
 .venta-descripcion {
@@ -343,90 +296,39 @@ body {
   color: var(--text-muted);
   font-size: 11px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
+  margin-top: 2px;
 }
 
 /* ============================================
-   ESTILOS DE PRODUCTOS
-   ============================================ */
-
-.producto-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border-color);
-  transition: background 0.2s;
-}
-
-.producto-item:hover {
-  background: var(--bg-card-hover);
-}
-
-.producto-nombre {
-  font-weight: bold;
-  color: var(--text-primary);
-}
-
-.producto-precio {
-  color: var(--color-primary);
-  font-weight: bold;
-}
-
-.producto-stock {
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-/* ============================================
-   ESTILOS DE REPORTES (GRÁFICAS)
+   REPORTES (GRÁFICAS)
    ============================================ */
 
 .reporte-container {
   background: var(--bg-card);
-  padding: 20px;
+  padding: 16px;
   border-radius: 16px;
   border: 1px solid var(--border-color);
-  margin-bottom: 16px;
-}
-
-.reporte-titulo {
-  color: var(--text-primary);
-  font-size: 16px;
-  margin: 0 0 16px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  margin-bottom: 14px;
 }
 
 .reporte-total {
   background: var(--bg-primary);
-  padding: 16px;
+  padding: 14px;
   border-radius: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   text-align: center;
-}
-
-.reporte-total-label {
-  color: var(--text-muted);
-  font-size: 12px;
 }
 
 .reporte-total-valor {
   color: var(--color-primary);
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.reporte-subtitulo {
-  color: var(--text-secondary);
-  font-size: 14px;
-  margin: 0 0 8px 0;
+  font-size: 26px;
+  font-weight: 700;
 }
 
 .barra-container {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .barra-labels {
@@ -442,56 +344,25 @@ body {
 
 .barra-valor {
   color: var(--color-primary);
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .barra-fondo {
   height: 6px;
   background: var(--bg-input);
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
 }
 
 .barra-progreso {
   height: 100%;
   background: var(--color-primary-gradient);
-  border-radius: 4px;
+  border-radius: 6px;
   transition: width 0.5s ease;
 }
 
 /* ============================================
-   ESTILOS DE CIERRES
-   ============================================ */
-
-.cierre-item {
-  padding: 10px 14px;
-  background: var(--bg-input);
-  border-radius: 8px;
-  margin-bottom: 8px;
-  border-left: 3px solid var(--color-primary);
-}
-
-.cierre-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.cierre-fecha {
-  font-weight: bold;
-}
-
-.cierre-total {
-  color: var(--color-primary);
-  font-weight: bold;
-}
-
-.cierre-detalle {
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-/* ============================================
-   ESTILOS DE TOAST
+   TOAST (Notificaciones)
    ============================================ */
 
 .toast-container {
@@ -504,11 +375,12 @@ body {
 }
 
 .toast {
-  padding: 14px 24px;
-  border-radius: 12px;
+  padding: 14px 20px;
+  border-radius: 14px;
   color: white;
-  font-weight: bold;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -521,12 +393,90 @@ body {
 .toast-info { background: #3b82f6; }
 
 /* ============================================
+   ANIMACIONES
+   ============================================ */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ============================================
+   PRODUCTOS
+   ============================================ */
+
+.producto-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s;
+  border-radius: 8px;
+}
+
+.producto-item:hover {
+  background: var(--bg-card-hover);
+}
+
+.producto-nombre {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.producto-precio {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.producto-stock {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ============================================
+   CIERRES
+   ============================================ */
+
+.cierre-item {
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--color-primary);
+}
+
+.cierre-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cierre-total {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 
 @media (max-width: 480px) {
   .stats-grid {
-    grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
   
@@ -534,7 +484,22 @@ body {
     font-size: 20px;
   }
   
+  .card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+  
+  .btn {
+    font-size: 14px;
+    padding: 12px 16px;
+    min-height: 44px;
+  }
+  
   .venta-monto {
     font-size: 16px;
+  }
+  
+  .venta-item {
+    padding: 10px 12px;
   }
 }

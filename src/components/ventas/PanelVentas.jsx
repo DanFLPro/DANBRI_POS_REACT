@@ -93,41 +93,73 @@ const PanelVentas = () => {
       </div>
 
       {/* Formulario */}
-      <div className="card">
-        <h3 className="card-title" style={{ color: 'var(--color-primary)', marginBottom: '16px' }}>
-          📝 Nueva Venta
-        </h3>
-
-        <form onSubmit={handleRegistrar}>
-          <input
-            type="number"
-            className="input"
-            placeholder="Monto (S/)"
-            value={monto}
-            onChange={(e) => setMonto(e.target.value)}
-            style={{ marginBottom: '12px' }}
-            step="0.01"
-            min="0.01"
-            required
-          />
-          <input
-            type="text"
-            className="input"
-            placeholder="Descripción (opcional)"
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            style={{ marginBottom: '16px' }}
-          />
-          <button
-            type="submit"
-            className="btn btn-primary btn-block"
-            disabled={cargando}
-            style={{ opacity: cargando ? 0.6 : 1 }}
-          >
-            {cargando ? '⏳ Registrando...' : '➕ Registrar Venta'}
-          </button>
-        </form>
-      </div>
+      {/* Formulario */}
+<div className="card" style={{
+  background: 'var(--bg-card)',
+  border: '2px solid var(--color-primary)',
+  boxShadow: '0 0 20px rgba(255, 107, 0, 0.05)'
+}}>
+  <h3 className="card-title" style={{ 
+    color: 'var(--color-primary)', 
+    marginBottom: '14px',
+    fontSize: '18px'
+  }}>
+    📝 Nueva Venta
+  </h3>
+  <form onSubmit={handleRegistrar}>
+    <div style={{ marginBottom: '12px' }}>
+      <label style={{ 
+        fontSize: '13px', 
+        color: 'var(--text-secondary)',
+        fontWeight: '500',
+        display: 'block',
+        marginBottom: '4px'
+      }}>
+        💰 Monto (S/)
+      </label>
+      <input
+        type="number"
+        className="input"
+        placeholder="0.00"
+        value={monto}
+        onChange={(e) => setMonto(e.target.value)}
+        step="0.01"
+        min="0.01"
+        required
+      />
+    </div>
+    <div style={{ marginBottom: '16px' }}>
+      <label style={{ 
+        fontSize: '13px', 
+        color: 'var(--text-secondary)',
+        fontWeight: '500',
+        display: 'block',
+        marginBottom: '4px'
+      }}>
+        📝 Descripción (opcional)
+      </label>
+      <input
+        type="text"
+        className="input"
+        placeholder="¿Qué vendiste?"
+        value={descripcion}
+        onChange={(e) => setDescripcion(e.target.value)}
+      />
+    </div>
+    <button
+      type="submit"
+      className="btn btn-primary btn-block"
+      disabled={cargando}
+      style={{ 
+        opacity: cargando ? 0.6 : 1,
+        fontSize: '16px',
+        fontWeight: '700'
+      }}
+    >
+      {cargando ? '⏳ Registrando...' : '➕ Registrar Venta'}
+    </button>
+  </form>
+</div>
 
       {/* Buscador y Lista */}
       <div className="card">
