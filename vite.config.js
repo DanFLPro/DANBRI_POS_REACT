@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/DANBRI_POS_REACT/', // ⚠️ CAMBIA 'danbri-pos' POR EL NOMBRE DE TU REPOSITORIO
+  base: '/DANBRI_POS_REACT/', // ← NOMBRE DEL REPOSITORIO EN GITHUB (MAYÚSCULAS)
 })
