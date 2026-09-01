@@ -66,7 +66,7 @@ const Layout = ({ children, usuario, onLogout }) => {
           <img 
             src="imag/LogoDanbri.png" 
             alt="Danbri" 
-            style={{ width: '36px', height: '36px', borderRadius: '8px' }}
+            style={{ width: '80px', height: '80px', borderRadius: '8px' }}
             onError={(e) => {
               // Si no carga la imagen, muestra un emoji
               e.target.onerror = null;

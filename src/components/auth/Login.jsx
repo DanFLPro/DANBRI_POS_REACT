@@ -134,7 +134,7 @@ const Login = ({ onLogin }) => {
           <img 
             src="imag/LogoDanbri.png" 
             alt="Danbri" 
-            style={{ width: '80px', margin: '0 auto 12px' }}
+            style={{ width: '160px', margin: '0 auto 12px' }}
              onError={(e) => {
           e.target.onerror = null;
           e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"%3E%3Ctext y="55" font-size="50" font-weight="bold" text-anchor="middle" fill="%23FF6B00"%3ED%3C/text%3E%3C/svg%3E';
