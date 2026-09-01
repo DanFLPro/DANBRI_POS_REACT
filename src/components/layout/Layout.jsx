@@ -64,7 +64,7 @@ const Layout = ({ children, usuario, onLogout }) => {
         {/* LOGO + NOMBRE DEL SISTEMA */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <img 
-            src="/imag/LogoDanbri.png" 
+            src="imag/LogoDanbri.png" 
             alt="Danbri" 
             style={{ width: '36px', height: '36px', borderRadius: '8px' }}
             onError={(e) => {

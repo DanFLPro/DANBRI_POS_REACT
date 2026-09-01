@@ -132,15 +132,15 @@ const Login = ({ onLogin }) => {
         {/* ======================================== */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <img 
-            src="/imag/Logo Danbri.png" 
+            src="imag/LogoDanbri.png" 
             alt="Danbri" 
-            style={{ width: '72px', margin: '0 auto 12px' }}
-            onError={(e) => {
-              // Si no carga la imagen, muestra un emoji
-              e.target.onerror = null;
-              e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72"%3E%3Ctext y="50" font-size="44" text-anchor="middle"%3E🏪%3C/text%3E%3C/svg%3E';
-            }}
-          />
+            style={{ width: '80px', margin: '0 auto 12px' }}
+             onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"%3E%3Ctext y="55" font-size="50" font-weight="bold" text-anchor="middle" fill="%23FF6B00"%3ED%3C/text%3E%3C/svg%3E';
+        }}
+/>
+          
           <h1 style={{ 
             color: '#ff6b00', 
             fontSize: '24px', 
