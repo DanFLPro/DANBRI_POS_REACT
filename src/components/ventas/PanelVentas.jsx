@@ -1,6 +1,6 @@
 /**
  * ============================================
- * PANEL DE VENTAS - CON BUSCADOR Y REPORTES
+ * PANEL DE VENTAS - CON REGISTRO DIARIO
  * ============================================
  */
 
@@ -8,8 +8,13 @@ import { useState } from 'react';
 import Toast from '../common/Toast';
 import BuscadorVentas from './BuscadorVentas';
 import ReporteVentas from './ReporteVentas';
+// 🔥 IMPORTAR EL CONTEXTO DE REGISTRO
+import { useRegistro } from '../../contexts/RegistroContext';
 
 const PanelVentas = () => {
+  // 🔥 OBTENER LA FUNCIÓN PARA GUARDAR REGISTROS
+  const { agregarRegistro } = useRegistro();
+
   const [ventas, setVentas] = useState([
     { id: 1, monto: 150.00, descripcion: 'Producto A', fecha: '01/09/2026', hora: '14:30', vendedor: 'Daniel', vendedorNombre: 'Daniel' },
     { id: 2, monto: 75.50, descripcion: 'Producto B', fecha: '01/09/2026', hora: '15:45', vendedor: 'Daniel', vendedorNombre: 'Daniel' },
@@ -45,8 +50,14 @@ const PanelVentas = () => {
         vendedor: 'Daniel',
         vendedorNombre: 'Daniel'
       };
+      
+      // Guardar en el estado local (para mostrar en la lista)
       setVentas([nuevaVenta, ...ventas]);
       setVentasFiltradas([nuevaVenta, ...ventas]);
+      
+      // 🔥 GUARDAR EN EL REGISTRO DIARIO (para el historial y exportar)
+      agregarRegistro(nuevaVenta);
+      
       setMonto('');
       setDescripcion('');
       setCargando(false);
@@ -70,127 +81,48 @@ const PanelVentas = () => {
       <ReporteVentas ventas={ventas} />
 
       {/* Estadísticas rápidas */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '12px',
-        marginBottom: '20px'
-      }}>
-        <div style={{
-          background: 'var(--bg-card)',
-          padding: '16px',
-          borderRadius: '16px',
-          border: '1px solid var(--border-color)',
-          textAlign: 'center'
-        }}>
-          <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>💰 Total</div>
-          <div style={{ 
-            color: 'var(--color-primary)', 
-            fontSize: '24px', 
-            fontWeight: 'bold',
-            marginTop: '4px'
-          }}>
-            S/ {total.toFixed(2)}
-          </div>
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-label">💰 Total</div>
+          <div className="stat-value primary">S/ {total.toFixed(2)}</div>
         </div>
-        <div style={{
-          background: 'var(--bg-card)',
-          padding: '16px',
-          borderRadius: '16px',
-          border: '1px solid var(--border-color)',
-          textAlign: 'center'
-        }}>
-          <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>📋 Ventas</div>
-          <div style={{ 
-            color: '#00b4d8', 
-            fontSize: '24px', 
-            fontWeight: 'bold',
-            marginTop: '4px'
-          }}>
-            {ventas.length}
-          </div>
+        <div className="stat-card">
+          <div className="stat-label">📋 Ventas</div>
+          <div className="stat-value info">{ventas.length}</div>
         </div>
       </div>
 
       {/* Formulario */}
-      <div style={{
-        background: 'var(--bg-card)',
-        padding: '20px',
-        borderRadius: '16px',
-        border: '1px solid var(--border-color)',
-        marginBottom: '20px'
-      }}>
-        <h3 style={{
-          color: 'var(--color-primary)',
-          fontSize: '16px',
-          margin: '0 0 16px 0',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
+      <div className="card">
+        <h3 className="card-title" style={{ color: 'var(--color-primary)', marginBottom: '16px' }}>
           📝 Nueva Venta
         </h3>
 
         <form onSubmit={handleRegistrar}>
           <input
             type="number"
+            className="input"
             placeholder="Monto (S/)"
             value={monto}
             onChange={(e) => setMonto(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              background: 'var(--bg-input)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '8px',
-              fontSize: '16px',
-              boxSizing: 'border-box',
-              marginBottom: '12px'
-            }}
+            style={{ marginBottom: '12px' }}
             step="0.01"
             min="0.01"
             required
           />
           <input
             type="text"
+            className="input"
             placeholder="Descripción (opcional)"
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              background: 'var(--bg-input)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '8px',
-              fontSize: '16px',
-              boxSizing: 'border-box',
-              marginBottom: '16px'
-            }}
+            style={{ marginBottom: '16px' }}
           />
           <button
             type="submit"
+            className="btn btn-primary btn-block"
             disabled={cargando}
-            style={{
-              width: '100%',
-              padding: '14px',
-              background: 'var(--color-primary)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              opacity: cargando ? 0.6 : 1,
-              transition: 'all 0.2s'
-            }}
-            onMouseEnter={(e) => {
-              if (!cargando) e.target.style.background = 'var(--color-primary-dark)';
-            }}
-            onMouseLeave={(e) => {
-              if (!cargando) e.target.style.background = 'var(--color-primary)';
-            }}
+            style={{ opacity: cargando ? 0.6 : 1 }}
           >
             {cargando ? '⏳ Registrando...' : '➕ Registrar Venta'}
           </button>
@@ -198,25 +130,11 @@ const PanelVentas = () => {
       </div>
 
       {/* Buscador y Lista */}
-      <div style={{
-        background: 'var(--bg-card)',
-        padding: '16px',
-        borderRadius: '16px',
-        border: '1px solid var(--border-color)'
-      }}>
-        <h3 style={{
-          color: 'var(--text-primary)',
-          fontSize: '16px',
-          margin: '0 0 16px 0',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <span>📊 Últimas Ventas</span>
-          <span style={{ color: 'var(--text-muted)', fontSize: '12px', fontWeight: 'normal' }}>
-            {ventas.length} ventas
-          </span>
-        </h3>
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">📊 Últimas Ventas</h3>
+          <span className="card-subtitle">{ventas.length} ventas</span>
+        </div>
 
         <BuscadorVentas ventas={ventas} onFiltrar={setVentasFiltradas} />
 
@@ -232,42 +150,11 @@ const PanelVentas = () => {
         ) : (
           <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
             {ventasFiltradas.map((venta) => (
-              <div key={venta.id} style={{
-                padding: '14px 16px',
-                borderBottom: '1px solid var(--border-color)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: '12px',
-                transition: 'background 0.2s'
-              }}
-              onMouseEnter={(e) => e.target.style.background = 'var(--bg-card-hover)'}
-              onMouseLeave={(e) => e.target.style.background = 'transparent'}
-              >
+              <div key={venta.id} className="venta-item">
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ 
-                    fontWeight: 'bold', 
-                    color: 'var(--color-primary)',
-                    fontSize: '18px'
-                  }}>
-                    S/ {venta.monto.toFixed(2)}
-                  </div>
-                  <div style={{ 
-                    color: 'var(--text-secondary)', 
-                    fontSize: '14px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}>
-                    {venta.descripcion}
-                  </div>
-                  <div style={{ 
-                    color: 'var(--text-muted)', 
-                    fontSize: '11px',
-                    display: 'flex',
-                    gap: '8px',
-                    flexWrap: 'wrap'
-                  }}>
+                  <div className="venta-monto">S/ {venta.monto.toFixed(2)}</div>
+                  <div className="venta-descripcion">{venta.descripcion}</div>
+                  <div className="venta-detalle">
                     <span>📅 {venta.fecha}</span>
                     <span>⏰ {venta.hora}</span>
                     <span>👤 {venta.vendedorNombre || venta.vendedor}</span>

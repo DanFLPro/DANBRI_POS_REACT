@@ -31,7 +31,7 @@ const Layout = ({ children, usuario, onLogout, vistaActual, onCambiarVista }) =>
           <img 
             src="imag/LogoDanbri.png" 
             alt="Danbri" 
-            style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'contain' }}
+            style={{ width: '80px', height: '80px', borderRadius: '8px', objectFit: 'contain' }}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"%3E%3Ctext y="26" font-size="24" text-anchor="middle" fill="%23FF6B00"%3ED%3C/text%3E%3C/svg%3E';
@@ -94,94 +94,123 @@ const Layout = ({ children, usuario, onLogout, vistaActual, onCambiarVista }) =>
       </main>
 
       <nav style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        background: 'var(--bg-secondary)',
-        borderTop: '1px solid var(--border-color)',
-        display: 'flex',
-        justifyContent: 'space-around',
-        padding: '8px 0',
-        paddingBottom: 'env(safe-area-inset-bottom)',
-        zIndex: 100,
-        transition: 'background 0.3s, border-color 0.3s'
-      }}>
-        <button
-          onClick={() => onCambiarVista('ventas')}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: vistaActual === 'ventas' ? 'var(--color-primary)' : 'var(--text-muted)',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2px',
-            fontSize: '20px',
-            cursor: 'pointer'
-          }}
-        >
-          <span>📊</span>
-          <span style={{ 
-            fontSize: '10px', 
-            color: vistaActual === 'ventas' ? 'var(--color-primary)' : 'var(--text-muted)' 
-          }}>
-            Ventas
-          </span>
-        </button>
-        
-        <button
-          onClick={() => onCambiarVista('productos')}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: vistaActual === 'productos' ? 'var(--color-primary)' : 'var(--text-muted)',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2px',
-            fontSize: '20px',
-            cursor: 'pointer'
-          }}
-        >
-          <span>🏷️</span>
-          <span style={{ 
-            fontSize: '10px', 
-            color: vistaActual === 'productos' ? 'var(--color-primary)' : 'var(--text-muted)' 
-          }}>
-            Productos
-          </span>
-        </button>
-        
-        <button
-          onClick={() => onCambiarVista('admin')}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: vistaActual === 'admin' ? 'var(--color-primary)' : 'var(--text-muted)',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2px',
-            fontSize: '20px',
-            cursor: 'pointer'
-          }}
-        >
-          <span>⚙️</span>
-          <span style={{ 
-            fontSize: '10px', 
-            color: vistaActual === 'admin' ? 'var(--color-primary)' : 'var(--text-muted)' 
-          }}>
-            Admin
-          </span>
-        </button>
-      </nav>
+  position: 'fixed',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  background: 'var(--bg-secondary)',
+  borderTop: '1px solid var(--border-color)',
+  display: 'flex',
+  justifyContent: 'space-around',
+  padding: '8px 0',
+  paddingBottom: 'env(safe-area-inset-bottom)',
+  zIndex: 100,
+  transition: 'background 0.3s, border-color 0.3s'
+}}>
+  {/* BOTÓN VENTAS */}
+  <button
+    onClick={() => onCambiarVista('ventas')}
+    style={{
+      background: 'transparent',
+      border: 'none',
+      color: vistaActual === 'ventas' ? 'var(--color-primary)' : 'var(--text-muted)',
+      padding: '8px 16px',
+      borderRadius: '8px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '2px',
+      fontSize: '20px',
+      cursor: 'pointer'
+    }}
+  >
+    <span>📊</span>
+    <span style={{ 
+      fontSize: '10px', 
+      color: vistaActual === 'ventas' ? 'var(--color-primary)' : 'var(--text-muted)' 
+    }}>
+      Ventas
+    </span>
+  </button>
+
+  {/* BOTÓN PRODUCTOS */}
+  <button
+    onClick={() => onCambiarVista('productos')}
+    style={{
+      background: 'transparent',
+      border: 'none',
+      color: vistaActual === 'productos' ? 'var(--color-primary)' : 'var(--text-muted)',
+      padding: '8px 16px',
+      borderRadius: '8px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '2px',
+      fontSize: '20px',
+      cursor: 'pointer'
+    }}
+  >
+    <span>🏷️</span>
+    <span style={{ 
+      fontSize: '10px', 
+      color: vistaActual === 'productos' ? 'var(--color-primary)' : 'var(--text-muted)' 
+    }}>
+      Productos
+    </span>
+  </button>
+
+  {/* BOTÓN ADMIN */}
+  <button
+    onClick={() => onCambiarVista('admin')}
+    style={{
+      background: 'transparent',
+      border: 'none',
+      color: vistaActual === 'admin' ? 'var(--color-primary)' : 'var(--text-muted)',
+      padding: '8px 16px',
+      borderRadius: '8px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '2px',
+      fontSize: '20px',
+      cursor: 'pointer'
+    }}
+  >
+    <span>⚙️</span>
+    <span style={{ 
+      fontSize: '10px', 
+      color: vistaActual === 'admin' ? 'var(--color-primary)' : 'var(--text-muted)' 
+    }}>
+      Admin
+    </span>
+  </button>
+
+  {/* 🔥 BOTÓN HISTORIAL - NUEVO */}
+  <button
+    onClick={() => onCambiarVista('historial')}
+    style={{
+      background: 'transparent',
+      border: 'none',
+      color: vistaActual === 'historial' ? 'var(--color-primary)' : 'var(--text-muted)',
+      padding: '8px 16px',
+      borderRadius: '8px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '2px',
+      fontSize: '20px',
+      cursor: 'pointer'
+    }}
+  >
+    <span>📋</span>
+    <span style={{ 
+      fontSize: '10px', 
+      color: vistaActual === 'historial' ? 'var(--color-primary)' : 'var(--text-muted)' 
+    }}>
+      Historial
+    </span>
+  </button>
+</nav>
     </div>
   );
 };
