@@ -213,6 +213,7 @@ const Layout = ({ children, usuario, onLogout, vistaActual, onCambiarVista }) =>
 </nav>
     </div>
   );
+  
 };
 
 export default Layout;

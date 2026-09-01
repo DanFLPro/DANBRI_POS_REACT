@@ -9,9 +9,11 @@ import Toast from '../common/Toast';
 import BuscadorVentas from './BuscadorVentas';
 import ReporteVentas from './ReporteVentas';
 import { useRegistro } from '../../contexts/RegistroContext';
+import { useEliminaciones } from '../../contexts/RegistroEliminacionesContext';
 
 const PanelVentas = () => {
   const { agregarRegistro } = useRegistro();
+  const { registrarEliminacion } = useEliminaciones();
 
   const [ventas, setVentas] = useState([
     { id: 1, monto: 150.00, descripcion: 'Producto A', fecha: '01/09/2026', hora: '14:30', vendedor: 'Daniel', vendedorNombre: 'Daniel' },
@@ -61,12 +63,27 @@ const PanelVentas = () => {
   };
 
   const handleEliminar = (id) => {
-    if (confirm('¿Estás seguro de eliminar esta venta?')) {
-      setVentas(ventas.filter(v => v.id !== id));
-      setVentasFiltradas(ventasFiltradas.filter(v => v.id !== id));
-      mostrarToast('🗑️ Venta eliminada', 'error');
-    }
-  };
+  // Buscar la venta antes de eliminarla
+  const venta = ventas.find(v => v.id === id);
+  if (!venta) {
+    mostrarToast('⚠️ Venta no encontrada', 'warning');
+    return;
+  }
+
+  // Pedir el nombre de quien elimina
+  const nombreVendedor = prompt('¿Quién está eliminando esta venta? (Escribe tu nombre)') || 'Desconocido';
+
+  if (!confirm('⚠️ ¿Eliminar esta venta? Quedará registrado para el administrador')) return;
+
+  // Registrar la eliminación
+  registrarEliminacion(venta, { nombre: nombreVendedor }, 'Venta eliminada');
+
+  // Eliminar la venta
+  setVentas(ventas.filter(v => v.id !== id));
+  setVentasFiltradas(ventasFiltradas.filter(v => v.id !== id));
+  
+  mostrarToast('🗑️ Venta eliminada (registrado para el administrador)', 'error');
+};
 
   return (
     <div>

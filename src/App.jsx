@@ -11,6 +11,8 @@ import PanelProductos from './components/productos/PanelProductos';
 import { ProductoProvider } from './contexts/ProductoContext';
 import { RegistroProvider } from './contexts/RegistroContext';
 import HistorialDiario from './components/historial/HistorialDiario';
+import { RegistroEliminacionesProvider } from './contexts/RegistroEliminacionesContext';
+import PanelEliminaciones from './components/admin/PanelEliminaciones';
 import './styles/global.css';
 
 function App() {
@@ -48,21 +50,25 @@ function App() {
       return <HistorialDiario />;
     default:
       return <PanelVentas />;
+    case 'eliminaciones':
+  return <PanelEliminaciones />;  
   }
 };
 
   return (
   <ProductoProvider>
-    <RegistroProvider>  {/* 🔥 NUEVO - ABRE */}
-      <Layout 
-        usuario={usuario} 
-        onLogout={handleLogout}
-        vistaActual={vistaActual}
-        onCambiarVista={setVistaActual}
-      >
-        {renderizarVista()}
-      </Layout>
-    </RegistroProvider>  {/* 🔥 NUEVO - CIERRA */}
+    <RegistroProvider>
+      <RegistroEliminacionesProvider>
+        <Layout 
+          usuario={usuario} 
+          onLogout={handleLogout}
+          vistaActual={vistaActual}
+          onCambiarVista={setVistaActual}
+        >
+          {renderizarVista()}
+        </Layout>
+      </RegistroEliminacionesProvider>
+    </RegistroProvider>
   </ProductoProvider>
 );
 }
